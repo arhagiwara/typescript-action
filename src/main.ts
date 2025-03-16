@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { wait } from './wait.js'
+import * as github from '@actions/github'
 
 /**
  * The main function for the action.
@@ -7,21 +7,32 @@ import { wait } from './wait.js'
  * @returns Resolves when the action is complete.
  */
 export async function run(): Promise<void> {
-  try {
-    const ms: string = core.getInput('milliseconds')
+  const myToken = core.getInput('token')
+  const octokit = github.getOctokit(myToken)
+  const context = github.context
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+  const ref = github.context.ref
+  const sha = github.context.sha
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+  const newBranch = await octokit.rest.git.createRef({
+    ...context.repo,
+    ref: ref,
+    sha: sha
+  })
+  core.debug(`newBranch ${newBranch.status}`)
+  const head = ref.split('/')[2]
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
-  } catch (error) {
-    // Fail the workflow run if an error occurs
-    if (error instanceof Error) core.setFailed(error.message)
+  const newPullRequest = await octokit.rest.pulls.create({
+    ...context.repo,
+    title: 'New pull request!',
+    base: 'main',
+    head: head
+  })
+  core.debug(`newPullRequest.status ${newPullRequest.status}`)
+  const getPR = await octokit.rest.pulls.list({
+    ...context.repo
+  })
+  for (let i = 0; i < getPR.data.length; i++) {
+    core.debug(getPR.data[i].title)
   }
 }

@@ -1,4 +1,4 @@
-name: The name of your action here
+name: Create a pull request
 description: Provide a description here
 author: Your name or organization here
 
@@ -9,15 +9,9 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: Your input description here
+  token:
+    description: Your github token
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: Your output description here
 
 runs:
   using: node20

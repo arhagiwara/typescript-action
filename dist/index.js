@@ -27268,14 +27268,22 @@ async function wait(milliseconds) {
 async function run() {
     try {
         const ms = coreExports.getInput('milliseconds');
+        const { name, // Microsoft Windows 11 Enterprise
+        version // 10.0.22621
+         } = await coreExports.platform.getDetails();
         // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         coreExports.debug(`Waiting ${ms} milliseconds ...`);
+        coreExports.debug(`Platform: ${name} ${version}`);
         // Log the current timestamp, wait, then log the new timestamp
+        coreExports.startGroup('Do some function');
         coreExports.debug(new Date().toTimeString());
+        coreExports.debug(new Date().getTime().toString());
         await wait(parseInt(ms, 10));
         coreExports.debug(new Date().toTimeString());
+        coreExports.debug(new Date().getTime().toString());
         // Set outputs for other workflow steps to use
         coreExports.setOutput('time', new Date().toTimeString());
+        coreExports.endGroup();
     }
     catch (error) {
         // Fail the workflow run if an error occurs
