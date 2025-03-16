@@ -12,14 +12,16 @@ export async function run(): Promise<void> {
   const context = github.context
 
   const ref = github.context.ref
-  const sha = github.context.sha
 
+  /*
+  const sha = github.context.sha
   const newBranch = await octokit.rest.git.createRef({
     ...context.repo,
     ref: ref,
     sha: sha
   })
   core.debug(`newBranch ${newBranch.status}`)
+  */
   const head = ref.split('/')[2]
 
   const newPullRequest = await octokit.rest.pulls.create({

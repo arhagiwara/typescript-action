@@ -31240,13 +31240,15 @@ async function run() {
     const octokit = githubExports.getOctokit(myToken);
     const context = githubExports.context;
     const ref = githubExports.context.ref;
-    const sha = githubExports.context.sha;
+    /*
+    const sha = github.context.sha
     const newBranch = await octokit.rest.git.createRef({
-        ...context.repo,
-        ref: ref,
-        sha: sha
-    });
-    coreExports.debug(`newBranch ${newBranch.status}`);
+      ...context.repo,
+      ref: ref,
+      sha: sha
+    })
+    core.debug(`newBranch ${newBranch.status}`)
+    */
     const head = ref.split('/')[2];
     const newPullRequest = await octokit.rest.pulls.create({
         ...context.repo,
